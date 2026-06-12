@@ -667,6 +667,56 @@ compressed slope profile is too timid at both ends.}
 \label{fig:calib}
 \end{figure}
 
+\paragraph{Two models, one Gini.} The diagnostic earns its keep when two models rank borrowers
+identically but disagree on the probabilities --- a difference the Gini cannot see.
+Figure~\ref{fig:twomodels} puts two such models on one portfolio: their scores are monotone
+transforms of each other, so they share a single empirical CAP and a single Gini ($0.59$).
+Model~A claims the realized PDs; Model~B is overconfident, pushing its claims too far in
+log-odds. The area cannot separate them --- the empirical curve is the same for both --- yet
+their model-implied curves diverge: A's claimed Gini ($0.58$) matches the empirical, while B's
+($0.78$) overstates its own discrimination, and B's reliability points bow off the $45^\circ$
+line. The gap between each model's implied Gini and the empirical Gini is the calibration
+summary; the Gini alone is blind to it.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.49\textwidth,height=6.4cm, xmin=0,xmax=1,ymin=0,ymax=1.02,
+  xlabel={$F(x)$ (worst first)}, ylabel={$F(x\mid D)$},
+  tick label style={font=\footnotesize}, label style={font=\footnotesize},
+  grid=major, grid style={gray!15},
+  legend style={at={(0.97,0.03)},anchor=south east,draw=none,font=\scriptsize},
+]
+\addplot[capgray,dotted,thick] coordinates {(0,0)(1,1)}; \addlegendentry{random}
+\addplot[black,very thick] table[x=Fx,y=Femp]{data/compare_cap.dat}; \addlegendentry{empirical}
+\addplot[capblue,very thick,dashed] table[x=Fx,y=FmodA]{data/compare_cap.dat}; \addlegendentry{Model A claims}
+\addplot[capred,very thick,dashed] table[x=Fx,y=FmodB]{data/compare_cap.dat}; \addlegendentry{Model B claims}
+\node[font=\scriptsize,anchor=north west,align=left] at (axis cs:0.05,0.99)
+ {Gini $=0.59$ (both)\\[1pt]\textcolor{capblue}{A claims $0.58$}\\\textcolor{capred}{B claims $0.78$}};
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.49\textwidth,height=6.4cm, xmin=0,xmax=0.85,ymin=0,ymax=0.85,
+  xlabel={predicted $\hat p(D\mid x)$}, ylabel={observed $\E[Y\mid x]$},
+  tick label style={font=\footnotesize}, label style={font=\footnotesize},
+  grid=major, grid style={gray!15},
+  legend style={at={(0.03,0.97)},anchor=north west,draw=none,font=\scriptsize},
+]
+\addplot[capgray,dotted,thick] coordinates {(0,0)(0.85,0.85)}; \addlegendentry{calibrated}
+\addplot[capblue,thick,mark=*,mark size=1.4pt] table[x=pA,y=EA]{data/compare_rel.dat}; \addlegendentry{Model A}
+\addplot[capred,thick,mark=square*,mark size=1.4pt] table[x=pB,y=EB]{data/compare_rel.dat}; \addlegendentry{Model B (overconfident)}
+\end{axis}
+\end{tikzpicture}
+\caption{Two models with identical ranking, hence identical empirical Gini (left), but different
+calibration (right). Both share the empirical CAP; Model~A's claimed CAP sits on it (claimed
+Gini $0.58$ vs.\ empirical $0.59$), while the overconfident Model~B's claimed CAP overstates
+discrimination (claimed Gini $0.78$) and its reliability points bow off the $45^\circ$ line ---
+a gap the area-based Gini cannot see.}
+\label{fig:twomodels}
+\end{figure}
+
 \section{The continuous case: density estimation}\label{sec:continuous}
 
 The discrete derivation transfers verbatim to continuous scores once the three distributions
