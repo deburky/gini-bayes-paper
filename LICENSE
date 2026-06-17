@@ -1,0 +1,22 @@
+# License
+
+This repository contains two kinds of work, licensed separately.
+
+## Paper (text, figures, and the LaTeX source)
+
+`gini-bayes.tex`, `gini-bayes.pdf`, and all figures and tables are licensed
+under the **Creative Commons Attribution 4.0 International License (CC BY 4.0)**.
+You may share and adapt them, including for commercial use, provided you give
+appropriate credit. Full text: `LICENSE-CC-BY-4.0.txt`
+(https://creativecommons.org/licenses/by/4.0/).
+
+This matches the license selected for the paper on arXiv.
+
+## Code (the reproduction scripts)
+
+Everything under `scripts/` and the figure data under `data/` is licensed under
+the **MIT License**. Full text: `LICENSE-MIT.txt`.
+
+## Attribution
+
+© 2026 Denis Burakov. To cite the paper, see the entry in `README.md`.

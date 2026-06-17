@@ -11,7 +11,7 @@
 \usepackage{siunitx}
 \sisetup{table-format=1.4, table-number-alignment=center}
 \usepackage[dvipsnames]{xcolor}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{url}
 \usepackage{setspace}
 \usepackage[font=small,labelfont=bf,skip=6pt]{caption}
@@ -79,27 +79,28 @@ calibration curve. The slope itself is already in the lineage (van der Burgt's $
 ratio of the two cumulative differentials), but it enters as a cited working fact, never as
 Bayes' theorem. We make that identification explicit and draw out its consequences. First, the
 CAP slope \emph{is} Bayes' theorem in cumulative coordinates: the standardized PD it recovers is
-the posterior rescaled by the prior. The weight of the paper then falls on two results this
-reading unlocks. The odds form places the weight of evidence, the Bayes factor, and the
-information value inside one geometry (the weight of evidence at a point is the log of the
-ratio of the bad and good CAP slopes), and the accuracy ratio, Somers' $D_{yx}$, and the
-Gini $(2A-1)/(1-\pD)$ are revealed as one number computed three ways. Run in \emph{comparison
+the posterior probability rescaled by the prior. The weight of the paper then falls on two results this
+reading unlocks. The odds form places the weight of evidence (the log of the likelihood ratio, i.e.\ the
+Bayes factor) and the information value inside one geometry (the weight of evidence at a point
+is the log of the ratio of the ``bad'' and ``good'' CAP slopes). The accuracy ratio, Somers' $D_{xy}$,
+and the Gini $(2A-1)/(1-\pD)$ are revealed as one number computed three ways. Run in \emph{comparison
 mode} (realized outcomes against model claims), the same identity recovers the reliability
 diagram in cumulative coordinates, with the sign of the gap between the empirical and
-model-implied Ginis as a calibration diagnostic. A worked five-band example carries every
-identity, and a kernel-density example confirms the construction in the continuous limit.
+model-implied Gini coefficients as a calibration diagnostic. A worked five-band example carries every
+identity in discrete form, and a kernel-density example extends them to the continuous case.
 \end{abstract}
 
 \section{Introduction}
 
 Discriminatory power and calibration are the two axes along which a credit rating system is
 judged. Power asks whether the model orders borrowers correctly; calibration asks whether
-the probabilities it attaches to them are right. The cumulative accuracy profile (CAP) and
-its summary, the accuracy ratio (or Gini coefficient), are the standard instruments for the
-first question, and a large industry literature treats them as power-only objects: the area
+the probabilities it attaches to them are credible (if we say 5\% probability of default,
+it means 5\% of the borrowers will actually default). The cumulative accuracy profile (CAP) and
+its summary, the accuracy ratio (or Gini coefficient), are well studied as the standard instruments for
+the first question, and a large industry literature treats them as power-only objects: the area
 under the curve uses ranks and discards levels.
 
-This separation is not as clean as it looks. The probabilistic reading of the CAP has an
+Yet the separation is not as clean as it looks. The probabilistic reading of the CAP has an
 industry lineage that quietly carries calibration inside a power object. Falkenstein, Boral
 and Carty (2000), in the appendix of the Moody's RiskCalc methodology, state a discrete
 relationship between the default-frequency curve and the power curve: the default rate at a
@@ -142,8 +143,8 @@ while the information value additionally needs the band counts.
 model claims produces an empirical and a model-implied CAP whose slope-by-slope agreement,
 together with the level condition $\hat p_D = \pD$, is exactly calibration
 (Section~\ref{sec:calib}): the reliability diagram in cumulative coordinates, with the gap
-between the two Ginis as its one-number summary. Along the way we show that the accuracy
-ratio, Somers' $D_{yx}$, and the Gini are the same number computed three ways
+between the two Gini coefficients as its one-number summary. Along the way we show that the accuracy
+ratio, Somers' $D_{xy}$, and the Gini are the same number computed three ways
 (Section~\ref{sec:somers}).
 \end{enumerate}
 
@@ -168,30 +169,30 @@ One sentence summarizes the stance of the paper:
 
 \section{Setup and definitions}\label{sec:setup}
 
-Borrowers carry an ordinal rating grade $x$, sorted from worst (riskiest) to best. The
+Borrowers carry an ordinal rating grade $x$, sorted from worst (riskiest) to best credit quality. The
 default indicator is $Y\in\{0,1\}$, with $D=\{Y=1\}$. Three distributions organize
 everything that follows:
 \begin{itemize}
 \item $f(x)$, the \textbf{marginal} (population) probability of grade $x$;
 \item $\PDx$, the \textbf{posterior} conditional probability of default at grade $x$
-(the calibration curve, in business terms the bad rate);
-\item $f(x\mid D)$, the \textbf{likelihood}: the probability that a randomly chosen
-defaulter carries grade $x$.
+(the calibration curve, in business terms the default rate);
+\item $f(x\mid D)$, the \textbf{likelihood}: how grade $x$ is distributed among defaulters
+(the class-conditional density of $x$ given default).
 \end{itemize}
 The unconditional (prior) default rate is the $f$-weighted average of the calibration curve,
 \begin{equation}\label{eq:prior}
 \pD \;=\; \int_0^1 \PDx\,f(x)\,dx
 \qquad\text{(discretely, }\textstyle\pD=\sum_x \PDx f(x)\text{)}.
 \end{equation}
-Bayes' theorem ties the three together:
+Bayes' theorem ties the three together, the form used by Voloshyn and Voloshyn (2023):
 \begin{equation}\label{eq:bayes}
 \underbrace{f(x\mid D)}_{\text{likelihood}}
 =\frac{\overbrace{\PDx}^{\text{posterior}}\,\overbrace{f(x)}^{\text{marginal}}}
 {\underbrace{\pD}_{\text{prior}}}.
 \end{equation}
 Read in words, $f(x\mid D)$ answers: \emph{if I pick a defaulter at random, what is the
-probability they came from grade $x$?} A grade contributes more defaulters when its bad rate
-$\PDx$ is high (it is risky) and when its population share $f(x)$ is large (many borrowers
+probability they came from grade $x$?} A grade contributes more defaulters when its default rate
+$\PDx$ is high (risky) and when its population share $f(x)$ is large (many borrowers
 sit there); the denominator $\pD$ normalizes the shares to sum to one.
 
 \paragraph{Running example.} Table~\ref{tab:data} is the five-band portfolio we carry through
@@ -225,8 +226,8 @@ f(x{=}E\mid D)=\frac{p(D\mid x{=}E)\,f(x{=}E)}{\pD}
 =\frac{0.50\times \tfrac{10}{115}}{\tfrac{20}{115}}
 =0.50\times\frac{10}{20}=0.25,
 \end{equation}
-matching $5$ defaulters out of $20$. Band E has the highest bad rate ($50\%$) but the
-smallest population share; band B has a low bad rate ($11\%$) but the largest share. Bayes
+matching $5$ defaulters out of $20$. Band E has the highest default rate ($50\%$) but the
+smallest population share; band B has a low default rate ($11\%$) but the largest share. Bayes
 balances the two into the defaulter mix $f(x\mid D)$. Figure~\ref{fig:bars} shows the inputs
 and the Bayes reweighting side by side.
 
@@ -245,7 +246,7 @@ and the Bayes reweighting side by side.
 ]
 \addplot[fill=capred!75,draw=capred] coordinates {(A,0.0417)(B,0.1111)(C,0.2000)(D,0.2500)(E,0.5000)};
 \addplot[fill=capgray!55,draw=capgray] coordinates {(A,0.2087)(B,0.3130)(C,0.2174)(D,0.1739)(E,0.0870)};
-\legend{$\PDx$ (bad rate),$f(x)$ (share)}
+\legend{$\PDx$ (default rate),$f(x)$ (share)}
 \end{axis}
 \end{tikzpicture}\hfill
 \begin{tikzpicture}
@@ -269,23 +270,19 @@ population share $f(x)$. \textbf{Right:} Bayes reweights the population $f(x)$ (
 defaulter mix $f(x\mid D)$ (blue), pulling mass toward the riskier bands. Grey exceeds blue in
 the safe bands A--B, where defaulters are under-represented relative to the population, and blue
 exceeds grey in the risky bands C--E, where they are over-represented; the crossover is the
-reweighting by the bad rate $\PDx$. The denominator $\pD$ normalizes $f(x\mid D)$ to sum to one.}
+reweighting by the default rate $\PDx$. The denominator $\pD$ normalizes $f(x\mid D)$ to sum to one.}
 \label{fig:bars}
 \end{figure}
 
 \section{The CAP slope is Bayes' theorem}\label{sec:slope}
 
-The CAP curve plots the cumulative share of defaulters captured, $F(x\mid D)$, against the
-cumulative share of population, $F(x)$, both sorted worst-first:
-\begin{equation}
-F(x\mid D)=\int_{\text{worst}}^{x} f(t\mid D)\,dt,
-\qquad
-F(x)=\int_{\text{worst}}^{x} f(t)\,dt .
-\end{equation}
-Its integrand is the defaulter density $f(x\mid D)$, which Bayes \eqref{eq:bayes} expresses
-through the calibration curve. The \emph{slope} of the CAP at an operating point is the
+The CAP curve plots the cumulative share of default risk captured, $F(x\mid D)$, against the
+cumulative share of population, $F(x)$, both accumulated worst-first: $F(x\mid D)$ is the
+running share of defaulters down to score $x$ and $F(x)$ the running share of all borrowers, so
+their densities are $f(x\mid D)$ and $f(x)$. Bayes \eqref{eq:bayes} expresses the defaulter
+density through the calibration curve. The \emph{slope} of the CAP at an operating point is the
 derivative of one cumulative against the other, and by the chain rule it is the ratio of the
-two integrands:
+two densities:
 \begin{equation}\label{eq:cap-slope}
 \boxed{\;
 \frac{dF(x\mid D)}{dF(x)}
@@ -294,7 +291,10 @@ two integrands:
 \;}
 \end{equation}
 where the last step is exactly Bayes' theorem \eqref{eq:bayes} with the common factor $f(x)$
-cancelled. Multiplying back by the prior recovers the calibration curve,
+cancelled. In words: over a thin slice of the population at score $x$, the CAP rises by the
+share of defaulters in that slice and runs by the share of borrowers; their ratio is the slope,
+and Bayes says that ratio is the standardized default rate. Multiplying back by the prior
+recovers the calibration curve,
 \begin{equation}\label{eq:pd-from-slope}
 \PDx \;=\; \pD\cdot\frac{dF(x\mid D)}{dF(x)},
 \end{equation}
@@ -304,11 +304,11 @@ Bayes' theorem in cumulative coordinates, and the quantity it returns,
 \mathrm{PD}_{\text{st}}(x)\;:=\;\frac{\PDx}{\pD}\;=\;\frac{dF(x\mid D)}{dF(x)},
 \end{equation}
 is the \textbf{standardized PD}, the posterior rescaled by the prior, i.e.\ how many times
-the portfolio-average risk a borrower at grade $x$ carries. Geometrically the standardized PD is
+the portfolio-average default risk a borrower at grade $x$ carries. Geometrically the standardized PD is
 the slope of the tangent to the CAP at an operating point (Figure~\ref{fig:tangent}): the curve
 tilts up past the $45^\circ$ random line where risk exceeds the average and flattens below it
 where risk is low, recovering the per-grade PD as $\PDx=\pD\cdot\text{slope}$, the reading van
-der Burgt (2019, Fig.~3) uses to turn the CAP into a calibration tool.
+der Burgt (2019, EuroBanking presentation, slide~3) uses to turn the CAP into a calibration tool.
 
 \begin{figure}[htbp]
 \centering
@@ -343,17 +343,18 @@ Burgt (2019) uses, here identified as Bayes' theorem in cumulative coordinates.}
 \end{figure}
 
 \paragraph{Provenance.} Equation~\eqref{eq:pd-from-slope} appears in Falkenstein et al.\ (2000,
-App.~4A) in discrete, verbal form: with $\mathrm{prob}(q)$ the default frequency at
+App.~4A) in discrete, verbal form: the default frequency at a score percentile equals the mean
+default rate times the discrete rise of the power curve, i.e.\ PD $=$ mean-PD $\times$ discrete
+CAP slope.\footnote{In their notation, with $\mathrm{prob}(q)$ the default frequency at
 percentile $q$ and $\mathrm{power}(q)$ the power-curve height,
 $\mathrm{prob}(q)=100\cdot\overline{\mathrm{prob}}\cdot\big(\mathrm{power}(q)-\mathrm{power}(q-1)\big)$,
-i.e.\ PD $=$ mean-PD $\times$ discrete CAP slope (the $1/100$ is the percentile step). They
-neither write it as a derivative nor invoke Bayes. Van der Burgt (2019, Eq.~2.3) gives the
-continuous form $\PDx=\pD\,[dy/dx]$ and the per-grade version
-$P_r=\frac{y_r-y_{r-1}}{x_r-x_{r-1}}\pD$, deriving the latter from Bayes' law applied to a
-single band. What \eqref{eq:cap-slope} adds is the observation that the \emph{continuous}
+the $1/100$ being the percentile step.} They neither write it as a derivative nor invoke Bayes. Van der Burgt (2019, Eq.~2.3) gives the
+continuous form $\PDx=\pD\,[dy/dx]$ and the per-grade version (his Eq.~2.11)
+$P_r=\frac{y_r-y_{r-1}}{x_r-x_{r-1}}\pD$, deriving the latter from Bayes' law (his Eq.~2.10)
+applied to a single band. What \eqref{eq:cap-slope} adds is the observation that the \emph{continuous}
 identity is itself nothing but Bayes \eqref{eq:bayes} differentiated (the ratio of
 $dF(x\mid D)=f(x\mid D)\,dx$ to $dF(x)=f(x)\,dx$), so the per-band Bayes step and the
-slope identity are the same statement at two resolutions.
+slope identity are the same statement.
 
 \paragraph{The CAP of the running example.} Accumulating Table~\ref{tab:data} worst-first
 (E, D, C, B, A) gives the curve in Figure~\ref{fig:cap}.
@@ -401,7 +402,7 @@ A & 0.2087 & 1.0000 & 0.0500 & 1.0000 \\
 \end{axis}
 \end{tikzpicture}
 \caption{The CAP curve of Table~\ref{tab:cap}. The slope of each segment is the standardized PD
-of that band; multiplied by $\pD$ it returns the band's bad rate
+of that band; multiplied by $\pD$ it returns the band's default rate
 (Eq.~\ref{eq:pd-from-slope}). The perfect-model boundary reaches $(\pD,1)=(0.1739,1)$, not
 $(0,1)$, the fact behind the $1-\pD$ correction in Section~\ref{sec:somers}.}
 \label{fig:cap}
@@ -421,7 +422,7 @@ satisfy the mixture identity $\pD\,\slope_{\text{bad}}(x)+(1-\pD)\,\slope_{\text
 every point, so the bad CAP rises above the diagonal exactly where the good CAP dips below.
 
 Bayes' theorem in odds form states posterior odds $=$ likelihood ratio $\times$ prior odds.
-Dividing the two slopes is exactly that statement, with $f(x)$ cancelling:
+Dividing the two slopes is exactly that statement, with $f(x)$ canceling:
 \begin{equation}\label{eq:woe}
 \underbrace{\frac{\PDx/\pD}{(1-\PDx)/(1-\pD)}}_{\text{ratio of CAP slopes}}
 =\underbrace{\frac{\PDx}{1-\PDx}}_{\text{posterior odds}}\cdot
@@ -496,16 +497,18 @@ carries a $1-\pD$ correction,
 \end{equation}
 because the perfect-model boundary in CAP coordinates reaches $(\pD,1)$, not $(0,1)$
 (Figure~\ref{fig:cap}): the maximum attainable area is $1-\pD/2$, not $1$. Van der Burgt
-(2019, Eq.~2.6) and Voloshyn and Voloshyn (2023, Eq.~1, after Thomas 2009) both use the exact
+(2019, Eq.~2.6), who attributes it to Tasche (2005, 2010) (the latter the working-paper
+version of the arXiv preprint cited here as Tasche 2009), and Voloshyn and Voloshyn
+(2023, Eq.~1, after Thomas 2009) both use the exact
 form; van der Burgt (2008) uses the approximation $\AR\approx 2A-1$.
 
 \paragraph{Somers' $D$ via pair counting.} The same $0.4395$ arises with no curve at all, by
 counting concordant and discordant good--bad pairs. Take one good and one bad borrower; the
 pair is \emph{concordant} if the bad sits in a riskier band than the good, \emph{discordant}
 if the good sits in a riskier band, and \emph{tied} if they share a band. Somers'
-$D_{yx}$, the rank correlation of the default outcome $y$ with the rating $x$, is
+$D_{xy}$ (Somers, 1962),\footnote{Somers' $D$ is asymmetric. The $2\,\mathrm{AUC}-1$ form used here, normalized by the pairs that differ in the outcome (the good--bad pairs), is $D_{xy}$ in the convention of Newson (2002) and the ROC literature; some sources write $D_{yx}$. The explicit denominator below fixes the meaning regardless of subscript order.} the rank correlation of the default outcome $y$ with the rating $x$, is
 \begin{equation}\label{eq:somers}
-D_{yx}=\frac{P-Q}{n_{\text{good}}\,n_{\text{bad}}},
+D_{xy}=\frac{P-Q}{n_{\text{good}}\,n_{\text{bad}}},
 \end{equation}
 with $P$ concordant and $Q$ discordant pairs (the Kendall convention; the symbol $D$ is reserved
 for the default event) and all $n_{\text{good}}n_{\text{bad}}$ good--bad pairs (including ties) in
@@ -513,7 +516,7 @@ the denominator. These pairs are drawn from the rating-by-outcome contingency ta
 (Table~\ref{tab:contingency}); Table~\ref{tab:pairs} carries out the count:
 $P=1192$, $Q=357$, ties $=351$, total $=95\times20=1900$, so
 \begin{equation}
-D_{yx}=\frac{1192-357}{1900}=0.4395 .
+D_{xy}=\frac{1192-357}{1900}=0.4395 .
 \end{equation}
 
 \begin{table}[htbp]
@@ -534,7 +537,7 @@ Total & 95 & 20 & 115 \\
 \end{tabular}
 \caption{The rating-by-outcome contingency table. Pairing each of the $95$ goods with each of
 the $20$ bads gives $n_{\text{good}}n_{\text{bad}}=1900$ good--bad pairs; classifying each as
-concordant, discordant, or tied by rating (Table~\ref{tab:pairs}) yields Somers' $D_{yx}$.}
+concordant, discordant, or tied by rating (Table~\ref{tab:pairs}) yields Somers' $D_{xy}$.}
 \label{tab:contingency}
 \end{table}
 
@@ -560,11 +563,11 @@ band) are $1900-1192-357=351$.}
 \label{tab:pairs}
 \end{table}
 
-\paragraph{One number, three routes.} The accuracy ratio, Somers' $D_{yx}$, and the
+\paragraph{One number, three routes.} The accuracy ratio, Somers' $D_{xy}$, and the
 Mann--Whitney form of the ROC Gini coincide exactly:
 \begin{equation}\label{eq:three-routes}
 \AR=\underbrace{\frac{2A-1}{1-\pD}}_{\text{CAP area}}
-=\underbrace{\frac{P-Q}{n_{\text{good}}n_{\text{bad}}}}_{\text{Somers' }D_{yx}}
+=\underbrace{\frac{P-Q}{n_{\text{good}}n_{\text{bad}}}}_{\text{Somers' }D_{xy}}
 =\underbrace{2\,\mathrm{AUC}-1}_{\text{ROC}}
 =0.4395,
 \qquad
@@ -573,16 +576,15 @@ Mann--Whitney form of the ROC Gini coincide exactly:
 The CAP route integrates the curve and corrects by $1-\pD$; the pair-counting route never
 draws a curve; the ROC route counts the same pairs with ties split. All three are the same
 rank statistic, and the $1-\pD$ in \eqref{eq:ar-exact} is precisely what reconciles the
-curve-area route with the pair-counting route. The approximation $2A-1=0.363$ fails the
-identity; the exact form passes it.
+curve-area approach with the pair-counting method.
 
 \section{Calibration in cumulative coordinates}\label{sec:calib}
 
-So far the calibration curve $\PDx$ has been the observed bad rate, and the CAP has recovered
+So far the calibration curve $\PDx$ has been the observed default rate, and the CAP has recovered
 it through \eqref{eq:pd-from-slope}. But \eqref{eq:cap-slope}--\eqref{eq:pd-from-slope} hold
 for \emph{any} function placed in the $\PDx$ slot, provided $\pD$ is its own $f$-weighted
 average. Whether that function coincides with observed default frequencies is a separate
-question, and that question is calibration. Running the identity in comparison mode turns
+question, one of calibration. Running the identity in comparison mode turns
 it into a calibration diagnostic.
 
 \paragraph{Two CAPs.} Sort all borrowers worst-first by the model's score and accumulate two
@@ -603,7 +605,7 @@ Its slope recovers the claims: $\slope_{\text{model}}(x)\cdot\hat p_D=\hat p(D\m
 $\hat p_D=\sum_x f(x)\,\hat p(D\mid x)$ is the model's average claim.
 \end{itemize}
 The model-implied CAP is the model's forecast of its own CAP, the curve that would
-materialize if the claimed PDs were the truth.
+materialize if the claimed PDs were the ground truth.
 
 \paragraph{Calibration as coincidence of the two curves.} Perfect calibration is the statement
 that the two CAPs agree everywhere, which splits into a shape condition and a level condition:
@@ -627,12 +629,13 @@ diagram. The signed gap between the empirical and model-implied Ginis is a \emph
 summary: its sign is the diagnostic. Model-implied below empirical signals compression, above
 signals overconfidence (made precise in the example below). Its magnitude can cancel, since two
 slope profiles that deviate in opposite directions integrate to the same area; for a
-non-cancelling magnitude we use the integrated absolute distance between the two CAP curves,
+non-canceling magnitude we use the integrated calibration error (ICE), the absolute area
+between the two CAP curves,
 \begin{equation}\label{eq:ice}
 \mathrm{ICE}=\int_0^1 \bigl|F_{\text{model}}(x\mid D)-F_{\text{emp}}(x\mid D)\bigr|\,dx,
 \end{equation}
 the cumulative form of the band-level calibration error and the CAP-coordinate analogue of the
-integrated calibration error (ECE). The calibration reference in CAP
+expected calibration error (ECE; Guo et al., 2017). The calibration reference in CAP
 coordinates is the \emph{empirical} curve itself (it plays the role of the $45^\circ$
 diagonal in the reliability diagram), not the perfect-model boundary through $(\pD,1)$,
 which is a ranking ideal irrelevant to calibration.
@@ -640,14 +643,14 @@ which is a ranking ideal irrelevant to calibration.
 \paragraph{Comparison on the running example.} Suppose a model ranks the five bands correctly
 but compresses risk in log-odds, $\operatorname{logit}\hat p(D\mid x)=\alpha+\beta\,
 \operatorname{logit}p(D\mid x)$ with $(\alpha,\beta)=(-0.4,0.6)$, the standard
-recalibration form, linear in log-odds, going back to Cox (1958). The claimed PDs and the
+linear-in-log-odds recalibration form. The claimed PDs and the
 resulting model-implied CAP are in
 Table~\ref{tab:calib}; the two CAPs and the reliability diagram are in
 Figure~\ref{fig:calib}. The level is nearly right ($\hat p_D=0.199$ vs.\ $\pD=0.174$) but the
 shape is flattened, and the model-implied Gini collapses to $0.282$ against the empirical
 $0.4395$. The sign of the gap is diagnostic: model-implied \emph{below} empirical means the
 claims are less dispersed than the outcomes, a recalibration slope above one (the forward
-compression $\beta=0.6$ inverts to a Cox slope $\approx 1.67$), while the reverse ordering,
+compression $\beta=0.6$ inverts to a calibration slope $\approx 1.67$), while the reverse ordering,
 model-implied above empirical, is the overconfidence signature. This level-versus-shape split is
 the cumulative-coordinate counterpart of the calibration-curve factor decomposition of Voloshyn
 and Voloshyn (2023), whose curve is linear in PD ($p(D\mid x)=ax+b$) rather than log-odds.
@@ -727,7 +730,7 @@ log-odds. The area cannot separate them (the empirical curve is the same for bot
 their model-implied curves diverge: A's claimed Gini ($0.58$) matches the empirical, while B's
 ($0.78$) overstates its own discrimination, and B's reliability points bow off the $45^\circ$
 line. The gap between each model's implied Gini and the empirical Gini is the calibration
-summary; the Gini alone is blind to it.
+summary useful for practitioners.
 
 \begin{figure}[htbp]
 \centering
@@ -779,14 +782,10 @@ a ratio of densities,
 and the weight of evidence \eqref{eq:woe-def} is a log-ratio of class-conditional densities,
 $\WOE(x)=\ln f(x\mid D)-\ln f(x\mid\bar D)$. Both reduce to estimating the class-conditional
 densities $f(x\mid D)$ and $f(x\mid\bar D)$. Alvarez-Melis (2019, 2021) does exactly this for
-weight of evidence explanations: fit a kernel density estimator (or a Gaussian model) to each
-class and take the log-density difference,
-\begin{equation}
-\hat f(x\mid c)=\frac{1}{n_c}\sum_{i:\,y_i=c}K_h(x-x_i),
-\qquad
-\widehat{\WOE}(x)=\ln\hat f(x\mid D)-\ln\hat f(x\mid\bar D),
-\end{equation}
-which is the continuous limit of the band-counting WOE in Section~\ref{sec:woe}. The same
+weight of evidence explanations: fit a kernel density estimate $\hat f(x\mid c)$ (or a Gaussian
+model) to each class's scores and take the log-density difference $\widehat{\WOE}(x)=\ln\hat
+f(x\mid D)-\ln\hat f(x\mid\bar D)$, the continuous limit of the band-counting WOE in
+Section~\ref{sec:woe}. The same
 estimates feed the standardized PD $\hat f(x\mid D)/\hat f(x)$ and, integrated, the CAP itself.
 In the continuous reading the rating bands of Section~\ref{sec:setup} are a histogram
 discretization of these densities, and the monotone PD scale is the requirement that the
@@ -799,16 +798,15 @@ $\operatorname{logit}p(D\mid x)=\beta_0+\beta_1 x$, $\beta_0=-1.3$, $\beta_1=1.1
 ($\pD=0.258$). We fit three Gaussian kernel density estimates ($\hat f(x\mid D)$ on the
 defaulters' scores, $\hat f(x\mid\bar D)$ on the non-defaulters', $\hat f(x)$ on all scores, each with
 the default Scott's-rule bandwidth; Figure~\ref{fig:kde-dens}, left) and read the paper's
-quantities off the densities, using none of the truth.
+quantities off the densities, using none of the ground truth.
 
 The density route reproduces the calibration curve it never saw. The estimated weight of
 evidence $\ln\hat f(x\mid D)-\ln\hat f(x\mid\bar D)$ is, by \eqref{eq:woe-def}, a straight line
-in the score whenever the truth is logistic; on this draw, fitting a line to the KDE-WOE over
+in the score whenever the ground truth is logistic; on this draw, fitting a line to the KDE-WOE over
 the bulk of the data gives a logit slope of $1.04$ against the true $\beta_1=1.1$ and an
 intercept of $-0.22$ against $\beta_0-\operatorname{logit}\pD=-0.24$ (Figure~\ref{fig:kde-rec},
 left). The residual gap is structural, not sampling noise: kernel smoothing convolves both
-class densities and attenuates the log-density-difference slope toward zero (the same
-mechanism as measurement-error attenuation in regression), a bias that shrinks with the
+class densities and attenuates the log-density-difference slope toward zero, a bias that shrinks with the
 bandwidth and vanishes as $h\to0$. (We report a single draw without standard errors; the point
 is the limiting identity, not a calibrated estimator.) Rescaling the same densities by the
 prior, $\hat p(D\mid x)=\pD\,\hat f(x\mid D)/\hat f(x)$, reproduces the logistic calibration
@@ -816,8 +814,7 @@ curve (Figure~\ref{fig:kde-rec}, right). The CAP of the continuous scores
 (Figure~\ref{fig:kde-dens}, right) returns $\mathrm{Gini}=0.508$ identically from the CAP-area
 route $(2A-1)/(1-\pD)$ and the pair-counting route $2\,\mathrm{AUC}-1$, both read off the
 same empirical CDF, so the agreement is the exact rank identity of Section~\ref{sec:somers}.
-The discrete five-band machinery and the continuous density machinery are the same identity at
-two resolutions.
+The discrete five-band example and the continuous density estimate have the same identity.
 
 \begin{figure}[htbp]
 \centering
@@ -920,9 +917,9 @@ derivative; (ii) carries the derivation through the odds form to place weight of
 Bayes factor, and information value inside the same CAP geometry, connecting to the
 information-theoretic scorecard framework of Sudjianto and Burakov (2025) and the
 weight of evidence explanations of Alvarez-Melis (2019, 2021); and (iii) shows that the
-accuracy ratio, Somers' $D_{yx}$, and the Gini are one number computed three ways, and
+accuracy ratio, Somers' $D_{xy}$, and the Gini are one number computed three ways, and
 uses the identity in comparison mode as a calibration diagnostic equivalent to the reliability
-diagram. The exact $\AR=(2A-1)/(1-\pD)$, required for the Somers' $D_{yx}$ identity, follows
+diagram. The exact $\AR=(2A-1)/(1-\pD)$, required for the Somers' $D_{xy}$ identity, follows
 Thomas (2009) and matches van der Burgt (2019); the $1-\pD$ correction is what the
 $2A-1$ approximation discards.
 
@@ -932,13 +929,13 @@ The cumulative accuracy profile is usually read as a power object, and its area 
 power-only summary. Read through Bayes' theorem, its slope is a calibration object: the slope
 is the posterior rescaled by the prior, the log-ratio of the bad and good slopes is the weight
 of evidence, the divergence of the two class-conditional densities is the information value, and the area,
-corrected by $1-\pD$, is at once the accuracy ratio, Somers' $D_{yx}$, and the ROC Gini. Run
+corrected by $1-\pD$, is at once the accuracy ratio, Somers' $D_{xy}$, and the ROC Gini. Run
 in comparison mode, the same identity makes the CAP a reliability diagram in cumulative
 coordinates. What the identity cannot do, absent a parametric assumption, is invert a single
 area into a full calibration curve: slope times level is identity, but the shape of the
-slope profile is assumption. Future work includes standard errors for the standardized PD and
-the Gini gap under the pair-counting view, and the continuous estimator of
-Section~\ref{sec:continuous} on real score distributions.
+slope profile is assumption. Future work includes standard errors for the standardized PD and the Gini gap under the
+pair-counting view, and a calibration threshold on the integrated calibration error (ICE) of
+Eq.~\eqref{eq:ice}.
 
 \appendix
 \section{Code and data availability}\label{app:code}
@@ -953,7 +950,7 @@ value, and the comparison-mode calibration gap) is in \texttt{scripts/five\_band
 the continuous kernel-density example of Section~\ref{sec:continuous} is in
 \texttt{scripts/continuous\_kde.py}, which also writes the figures' data files. The five-band
 quantities use the exact rational values of Table~\ref{tab:data}; the comparison-mode model is
-the compressed-log-odds recalibration of Section~\ref{sec:calib}.
+the linear-in-log-odds recalibration of Section~\ref{sec:calib}.
 
 \begin{thebibliography}{99}
 \setlength{\itemsep}{0.3em}
@@ -966,9 +963,6 @@ arXiv:1910.13503.
 Wortman Vaughan, J. (2021). \emph{From Human Explanation to Model Interpretability: A
 Framework Based on Weight of Evidence}. arXiv:2104.13299.
 
-\bibitem{cox1958} Cox, D.~R. (1958). Two further applications of a model for binary
-regression. \emph{Biometrika} 45(3--4), 562--565.
-
 \bibitem{falkenstein2000} Falkenstein, E., Boral, A., and Carty, L.~V. (2000).
 \emph{RiskCalc for Private Companies: Moody's Default Model}. Rating Methodology, Global
 Credit Research, Moody's Investors Service.
@@ -980,12 +974,23 @@ Charles Griffin, London.
 M.~H. DeGroot, D.~V. Lindley, and A.~F.~M. Smith (eds.), \emph{Bayesian Statistics 2},
 pp.~249--270. North-Holland.
 
+\bibitem{guo2017} Guo, C., Pleiss, G., Sun, Y., and Weinberger, K.~Q. (2017). On calibration
+of modern neural networks. In \emph{Proceedings of the 34th International Conference on Machine
+Learning (ICML)}, pp.~1321--1330.
+
+\bibitem{newson2002} Newson, R. (2002). Parameters behind ``nonparametric'' statistics:
+Kendall's $\tau$, Somers' $D$ and median differences. \emph{The Stata Journal} 2(1), 45--64.
+
 \bibitem{somers1962} Somers, R.~H. (1962). A new asymmetric measure of association for
 ordinal variables. \emph{American Sociological Review} 27(6), 799--811.
 
 \bibitem{sudjianto2025} Sudjianto, A., and Burakov, D. (2025). \emph{An Information-Theoretic
 Framework for Credit Risk Modeling: Unifying Industry Practice with Statistical Theory for
 Fair and Interpretable Scorecards}. arXiv:2509.09855.
+
+\bibitem{tasche2005} Tasche, D. (2005). Rating and probability of default validation. Working
+Paper 14, Studies on the Validation of Internal Rating Systems, Basel Committee on Banking
+Supervision, Bank for International Settlements.
 
 \bibitem{tasche2009} Tasche, D. (2009). \emph{Estimating Discriminatory Power and PD Curves
 When the Number of Defaults Is Small}. arXiv:0905.3928.
@@ -999,6 +1004,10 @@ cumulative accuracy profile. \emph{Journal of Risk Model Validation} 1(4), 17--3
 \bibitem{vdb2019} van der Burgt, M.~J. (2019). Calibration and mapping of credit scores by
 riding the cumulative accuracy profile. \emph{Journal of Credit Risk} 15(1), 1--25.
 \url{https://doi.org/10.21314/JCR.2018.240}.
+
+\bibitem{vdb2019talk} van der Burgt, M.~J. (2019). \emph{Calibration and Mapping of Credit
+Scores by Riding the Cumulative Accuracy Profile}. Presentation, EuroBanking 2019, Ljubljana,
+26--29 May (slide~3, ``CAP as calibration tool'').
 
 \bibitem{voloshyn2023} Voloshyn, M., and Voloshyn, I. (2023). \emph{On Factors Affecting the
 Change in the Gini Coefficient of the Credit Scoring Model}. ScienceOpen Preprint.

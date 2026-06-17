@@ -3,8 +3,9 @@ __pycache__/
 *.py[oc]
 .venv/
 
-# PDF
+# Build output / arXiv staging
 *.pdf
+tarball/
 
 # LaTeX build artifacts
 *.aux
